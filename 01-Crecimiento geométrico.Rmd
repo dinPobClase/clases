@@ -1,0 +1,217 @@
+---
+title: "Crecimiento geométrico"
+author: "David Martínez Cascante"
+date: "18 de febrero de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+#Crecimiento geométrico
+
+## Contenidos
+
+> -  Teoría del crecimiento geométrico
+
+> -  Modificaciones al programa de estudio
+
+> -  Dudas con instalación del ambiente de trabajo
+
+> -  Ambiente **RStudio**, y repaso del tutorial con **R**.
+
+> -  Tarea 01. Instrucciones
+
+> -  Metas para la próxima semana
+
+# Sistemas
+
+## Población como un sistema
+
+> -  Un sistema es un conjunto de partes, cada una con cierta funcionalidad, que son esenciales para el funcionamiento de las otras partes del sistema.
+
+> -  Un sistema puede ser definido, de acuerdo a una escala. Por tanto, para una determinada escala se define un sistema, y todo lo que queda por fuera, se le denomina ambiente.
+ 
+> -  Una población es un sistema de individuos de la misma especie que interaccionan y se intercomunican entre sí, y que coexisten dentro de cierta zona geográfica.
+
+Berryman, A. A., & Kindlmann, P. (2008). Population systems: a general introduction. Population (English Edition) (2nd ed.). Springer.
+
+## Población como sistema
+
+![Población como sistema](C:\localRepos\clases\figs\C01-System.png)
+
+## Dinámica del sistema
+
+> -  Las partes de un sistema se regulan entre sí. 
+
+> -  En la regulación de un sistema, pueden intervenir las **entradas** del ambiente. Pero el sistema puede tener efecto sobre el ambiente mediante sus **salidas**.
+
+> -  Una "foto" del sistema, se conoce como **estado del sistema**.
+
+> -  Una *variable dentro del sistema* que este propensa a cambiar, y que sea utilizada para describir el sistema, se conoce como **variable de estado** (*state variable*). Por ejemplo, una distribución de edades.
+
+> -  Una variable que afecte el proceso que la genera, se dice que tiene **retroalimentación**. Por ejemplo, la *carrera armamentista* entre depredador y presa.
+
+## Dinámica del sistema
+
+![Dinámica del sistema](C:\localRepos\clases\figs\C01-Change in State.png)
+
+## Ecología de poblaciones
+
+>   Berryman y Kindlmann (2008), nos exhortan a pensar que la *Ecología de Poblaciones* es un proceso de ingeniería inversa, donde el sistema existe, y nos interesa saber cómo funciona.
+
+![Dinámica del sistema](C:\localRepos\clases\figs\PopSystemBook.png)
+
+# ¿Por qué crecen las poblaciones?
+
+## 
+
+![Población como sistema](C:\localRepos\clases\figs\C01-System.png)
+
+## ¿Por qué crecen las poblaciones?
+
+> -   Los organismos no viven eternamente. Siempre existe mortalidad.
+
+> -  Debido a la mortalidad, los individuos deben dejar descendencia.
+
+> -  Las poblaciones deben amortiguar el efecto de los individuos que no se reproducen.
+
+> -  La teoría de la Evolución exige una cantidad de individuos, de donde se toma un *pool* de variación genética.
+
+## Deducción del crecimiento geométrico
+
+![Crecimiento geométrico](C:\localRepos\clases\figs\C01-Geom.png)
+
+¿Cuánto crece $N_{t+1}$ con relación a $N_t$?
+
+## Deducción del crecimiento geométrico
+
+> -  $\frac{N_{t+1}}{N_t} = 2$
+
+> -  $N_{t+1} = 2\,N_t$
+
+> -  $N_2 = \ ?$
+
+## Deducción del crecimiento geométrico
+
+> -  $N_2 = 2\, N_1$
+
+> - $N_2 = 2\, (2\, N_0)$
+
+> -  $N_3 = \ ?$
+
+> -  $N_n = \ ?$
+
+## Logramos
+
+$$
+N_n = 2^n N_0
+$$
+
+# Deducción generalizada
+
+
+## Cambios y razones de cambio
+
+¿Cómo expresaría el cambio de $N_2$ a $N_1$?
+
+> -   $N_2 - N_1$
+
+> -   $N_2 - N_1 = \Delta N$
+
+> -   ¿Cómo expresaría este cambio, en un intervalo de tiempo?
+
+
+> - $\frac{N_2 - N_1}{t_2 - t_1}$
+
+> - $\frac{\Delta N}{\Delta t}$
+
+
+## Exprese en palabras, una ecuación que explique el cambio en el tamaño de una población
+
+> -  Cambio en una población, en un momento determinado, equivale a las entradas en la población menos las salidas de la misma.
+
+> -  $\frac{\Delta N}{\Delta t} = B - D$
+
+> -  ¿Qué propiedades observa en esta ecuación?
+
+##  Crecimiento Geométrico: Desarrollo 1
+
+Si dividimos la ecuación anterior por $N$ para conocer el cambio poblacional *per capita*, tenemos:
+
+$$
+  \frac{\Delta N / \Delta t}{N} = \frac{B - D}{N}
+$$
+
+Asumiendo que la diferencia entre *natalidad* ($B$) y *mortalidad* ($D$) se mantenga constante, reemplazamos el lado derecho por una constante:  $\mathrm{R_m}$, la tasa de crecimiento por individuo.
+
+$$
+  \frac{\Delta N / \Delta t}{N} = \mathrm{R_m}
+$$
+
+
+##  Crecimiento Geométrico: Desarrollo 2
+
+Multiplicando ambos lados por $N$:
+
+$$
+  \frac{\Delta N }{\Delta t} = \mathrm{R_m} N
+$$
+
+¿Cuáles son las propiedades de $\mathrm{R_m}$? ¿Qué pasa cuando es grande, cercano a cero o negativo?
+
+**En palabras, exprese una ecuación que relacione $N_1$ con $N_0$, usando lo que sabemos hasta ahora**
+
+
+##  Crecimiento Geométrico: Desarrollo 3
+
+*El tamaño de población de este año es igual a la del año anterior más el crecimiento en ese periodo de tiempo*
+
+$$
+ N_{t} = N_{t-1} + \frac{\Delta N }{\Delta t} = N_{t-1} + \mathrm{R_m} N_{t-1}
+$$
+
+Note que podemos escribir:
+
+$$
+ N_1 =  N_0 \left( 1 + \mathrm{R_m}\right)
+$$
+
+Donde $1 + \mathrm{R_m}$ es una nueva constante, que llamamos *la tasa de multiplicación*, y se representa con el símbolo $\mathrm{\lambda}$.
+
+$$
+ N_1 = N_0  \mathrm{\lambda}
+$$
+
+**¿Cuáles son las propiedades de $\mathrm{\lambda}$ ?**
+
+##  Crecimiento Geométrico: Desarrollo 4
+
+¿Encuentra una relación con el primer ejercicio que hicimos anteriormente?
+
+> -  Encuentre $N_2$, $N_3$, $N_t$
+
+##  La ecuación del crecimiento geométrico
+
+$$
+  N = N_0 \mathrm{\lambda}^t
+$$
+
+
+#  Modificaciones al programa de estudio
+
+#  Dudas con instalación del ambiente de trabajo
+
+#  Ambiente **RStudio**, y repaso del tutorial con **R**.
+
+#  Tarea 01. Instrucciones
+
+##  Metas para la próxima semana
+
+> -  Hacer una cuenta en **GitHub**. Enviar usuario por correo al profesor. Aceptar invitación al *team* del curso.
+
+> -  Instalar y ver tutoriales de **Mendeley Desktop**. Aprender a exportar una referencia en formato `.bib`.
+
+> -  Avanzar la tarea 01 y escribir las dudas al foro del curso.
+
+> - Ver Instrucciones de la tarea en el material del curso.
