@@ -1,0 +1,222 @@
+---
+title: "Crecimiento exponencial"
+author: "David Martínez Cascante"
+date: "Tercer semana. Ecología de Poblaciones Silvestres"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Contenidos
+
+> -  Teoría del crecimiento exponencial
+
+> -  Fechas para el Taller de Gestión de datos
+
+> -  Dudas con instalación del ambiente de trabajo II.
+
+> -  Paso a paso del tutorial con **R**.
+
+> -  Tarea 01. Dudas
+
+> -  Metas para la próxima semana
+
+## ¿Qué es una ecuación diferencial?
+
+Formalmente, una ecuación diferencial es aquella donde:
+
+> *la incógnita es una función de una o varias variables Y si en la ecuación aparece una o más derivadas de la incógnita.*
+
+En palabras simples:
+
+> *es una ecuación, donde el valor de la variable dependiente está en función de otras variables y la tasa de cambio de la misma variable dependiente.*
+
+## Notación diferencial
+
+La mayor diferencia del crecimiento geométrico con el exponencial, es la escala de tiempo en la que trabajamos.
+
+-   El crecimiento geométrico trabaja con escala de tiempo discreto (Números naturales).
+
+-   El crecimiento exponencial trabaja con escalas de tiempo infinitesimales (infinitamente pequeñas).
+
+Para representar escalas de tiempo infinitesimales, cambiamos el símbolo $\Delta$, por una *de* minúscula ($d$).
+
+## Deducción del crecimiento exponencial
+
+**En palabras**:
+
+*La tasa de crecimiento poblacional es proporcional al tamaño de la población.*
+
+Es decir, una población crece rápido si tiene muchos individuos. En contraste con una población con pocos individuos, donde el crecimiento será más lento.
+
+-   Se dice que un valor es proporcional a otro, si su cociente es una constante:
+
+$$
+\frac{dN/dt}{N} = \mathrm{r_m}
+$$
+
+## Deducción del crecimiento exponencial
+
+Despejando la tasa de crecimiento, observamos una patrón similar al desarrollo de la ecuación de crecimiento geométrico.
+ 
+$$
+\frac{dN}{dt} = \mathrm{r_m}N
+$$
+
+Donde $\mathrm{r_m}$ es la *tasa intrínseca de crecimiento* (equivale a la diferencia entre la tasa de natalidad instantánea menos la tasa de mortalidad instantánea).
+
+Esta expresión es una de las ecuaciones diferenciales más sencillas de resolver. Se utiliza el método de *separación de variables*.
+
+## Deducción del crecimiento exponencial
+
+El método de separación de variables consiste en dejar todos los términos de la incógnita de un lado, y los términos de la variable independiente ($t$) del otro lado de la igualdad:
+
+$$
+\frac{1}{N} \times \frac{dN}{dt}=\mathrm{r_m}
+$$
+
+Luego se integra ambos lados con respecto de la variable independiente:
+
+$$
+\int \left( \frac{1}{N} \times \frac{dN}{dt}\right)\,dt=\int \mathrm{r_m}\,dt
+$$
+
+## Deducción del crecimiento exponencial
+
+Observe que del lado izquierdo los diferenciales se cancelan:
+$$
+\begin{split}
+\int \frac{dN}{N}&=\mathrm{r_m} t + c\\
+\ln N & = \mathrm{r_m} t + c\\
+\end{split}
+$$
+
+Se despeja $N$, y se obtiene $N=Ce^{\mathrm{r_m} t}$. Luego, cuando $N=N_0$ entonces $t=0$; por lo que la expresión se simplifica a $N_0 = C e^0 = C$. Dando como resultado la expresión
+
+$$
+N = N_0 e^{\mathrm{r_m} t}
+$$
+
+
+## Relación del crecimiento exponencial con el geométrico
+
+Las constantes que determinan la velocidad del crecimiento están relacionadas.
+
+$$
+\begin{split}
+\lambda &= e^{\mathrm{r_m}}\\
+\mathrm{r_m} &= \ln\lambda\\
+\end{split}
+$$
+
+Esto es interesante porque $\mathrm{r_m}$ es fácilmente escalable. Por ejemplo, si nos dan la tasa intrínseca de crecimiento en días, pero queremos utilizarla en semanas, hacemos que $\mathrm{r_s}=7\times \mathrm{r_d}$.
+
+## Ejercicio en clase
+
+De acuerdo con Illman et al (2000) un gramo de *Chlorella emersonii* puede contener 29 kJ/g (energía por gramo). Si la tasa intrínseca es de 0.99 g/d, ¿cuántos gramos de *Chlorella* necesito para producir 5000 kJ? ¿Cuál es el tiempo de producción? Asuma un crecimiento exponencial, y un inóculo inicial con $N_0 = 1\mu \mathrm{g}$ de *Chlorella*.
+
+Illman, et al. (2000). Increase in Chlorella strains calorific values when grown in low nitrogen medium. Enzyme and Microbial Technology, 27(8), 631–635.
+
+## Ajuste de la curva de crecimiento exponencial
+
+Podemos utilizar las propiedades de los logaritmos para estimar fácilmente los parámetros de la curva de crecimiento:
+
+$$
+\ln \left( N_t \right) = \ln \left( N_0 \right) + \mathrm{r_m}t
+$$
+
+```{r include=FALSE,cache=TRUE}
+N0 <- 132; rm <- 0.27; t <- seq(0,5,length.out = 200)
+
+dataN <- N0*exp(rm*t)+rnorm(length(t),mean = 0,sd = 7.5)
+data <- data.frame(N=dataN,t=t)
+```
+
+## Datos en escala natural y logarítmica
+
+```{r fig.height=3}
+layout(matrix(c(1,2), ncol=2,nrow=1))
+plot(t,dataN,type="p", pch=21,bg=1)
+plot(t,log(dataN),type="p", pch=21,bg=1)
+```
+
+Los valores que se utilizaron para construir la curva son:
+
+> - $N_0 = 132$ y $r_m = 0.27$
+
+> - ... pero no lo sabemos!
+
+## Ajuste de la curva de crecimiento exponencial
+
+```{r echo=TRUE}
+out <- glm(
+  formula = log(N) ~ t,
+  family = gaussian(link = "identity"),
+  data = data
+  )
+  
+  outCI <- confint(out)
+  
+  outCI
+```
+
+
+```{r include=FALSE}
+ppmM <- array(NA,dim = dim(outCI))
+
+for( j in 1:nrow(outCI)){
+  standard <- ifelse(j==1,log(N0),rm)
+  for(i in 1:ncol(outCI)){
+    ppmM[j,i] <- (standard-outCI[j,i])/standard * 1000
+  }
+  
+}
+
+
+doPlot <- function(){
+plot(1:4, 1:4,ylim = range(as.numeric(ppmM)),type='n',
+     axes=FALSE, xlab = "parámetros",ylab = "Partes por mil")
+axis(side = 1,at = 2:3,
+     labels = c(expression(log(N[0])),expression(r[m])))
+axis(side = 2)
+for( j in 1:nrow(ppmM)){
+  standard <- ifelse(j==1,log(N0),rm)
+  lines(x=rep(j+1,times=2),ppmM[j,],lwd=2)
+  points(j+1,coef(out)[j]/standard, pch = 21, bg = 1)
+}
+lines(x=2:3,y=c(0,0),lty=2,col="darkgray",lwd=2)
+}
+
+```
+
+## Verificar valores
+
+```{r}
+doPlot()
+```
+
+## Graficar
+
+```{r , echo = TRUE,fig.height=3.5, fig.width=5}
+plot(t,dataN,type="p", pch=21,bg=1)
+curve(exp(coef(out)[1])*exp(coef(out)[2]*x),
+      add = TRUE,
+      col = "blue", lwd = 2)
+```
+
+
+# Fechas para el Taller de Gestión de datos
+
+# Dudas con instalación del ambiente de trabajo II
+
+# Paso a paso del tutorial con **R**
+
+# Tarea 01. Dudas
+
+## Metas para la próxima semana
+
+- Entregar la Tarea 01. **Fecha límite** 2018-03-07 (YYYY-MM-DD), 23:59 horas.
+
+- Todos deben estar en el foro!!
