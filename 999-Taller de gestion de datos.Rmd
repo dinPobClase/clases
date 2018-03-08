@@ -1,0 +1,154 @@
+---
+title: "Taller de Gestión de Datos"
+author: "David Martínez Cascante"
+date: "8 de marzo de 2018"
+output: pdf_document
+---
+
+# Objetivo General
+
+Aprender a utilizar de manera básica, el **LibreOffice Base**, para almacenar datos de manera ordenada.
+
+# Actividades
+
+El estudiante creará una base de datos con las siguientes características:
+
+## Tablas
+
+Se crearán dos tablas principales, las cuales se llamarán:
+
+- `tbl_muestreo`
+
+- `tbl_individuos`
+
+### Variables de cada tabla
+
+Para `tbl_muestreo`
+
+- *ID_Muestreo*. Contendrá enteros. Se debe autorellenar. Y debe ser la clave primaria.
+
+- *FechaInicio*. Contendrá fechas en el formato `YYYY-MM-DD`. Debe guardar la fecha de inicio del muestreo.
+
+- *FechaFinal*. Contendrá fechas en formato `YYYY-MM-DD`. Debe guardar la fecha final de un muestreo
+
+- *Asistentes*. Es un entero **positivo**. Contiene el número de asistentes a la gira.
+
+- *NumGira*. Contiene texto. Va a contener el código de aprobación de la gira.
+
+- *Presupuesto*. Moneda. Va a contener la moneda en CRC con el presupuesto asignado para la gira.
+
+- *Gastos*. Moneda. Va a contener la moneda en CRC con los gastos de la gira.
+
+***
+
+Para `tbl_Individuos`:
+
+- *ID_Individuos*. Contendrá enteros. Se debe autorellenar. Y debe ser la clave primaria.
+
+- *Muestreo_ID*. Contendrá enteros. Esta columna se utilizará para ligar las dos tablas principales mediante una relación.
+
+- *Fecha*. Contendrá fechas en el formato `YYYY-MM-DD`. Este campo es para el día en que se encontró el animal.
+
+- *Hora*. Formato de 24 h. Este campo tendrá la hora en que se encontró el animal.
+
+- *Etiqueta*. Entero. Esta campo se rellenará con una lista, para evitar errores de digitación.
+
+- *Muerto*. Entero. Este campo contendrá un `checkbox` para indicar si el animal fue encontrado sin vida.
+
+
+
+## Listas
+
+Una lista para las etiquetas de los animales. Esta será una tabla con el nombre `lst_etiqueta`.
+
+Tendrá las siguientes variables
+
+- *ID_Etiqueta*. Contendrá enteros. Se debe autorellenar. Y debe ser la clave primaria.
+
+- *Etiqueta*. Texto de la Etiqueta [*pattern field* `AAALNNNN`]. Tendrá tres letras y, separadas por un guión, cuatro números. 
+
+## Formularios
+
+Un formulario llamado `Nueva Etiqueta`  añadir nuevas etiquetas
+
+Otro para el principal
+
+## Consultas
+
+Crearemos una consulta llamada `SurvivalTable` que nos muestre:
+
+- ID_Muestreo
+
+- ID_Individuos
+
+- Fecha
+
+- Hora
+
+- Etiqueta
+
+- Muerto
+
+Y otra que nos ayudará a gestionar el balance de gastos de la gira:
+
+- NumGira
+
+- Presupuesto - Gastos
+
+- Asistentes
+
+- FechaFinal
+
+- FechaInicio
+
+- Gastos
+
+# Leer los datos en R
+
+```{r}
+#install.packages('ODB')
+library(ODB)
+#Open Database
+DB<-odb.open("C:/localRepos/clases/999-Taller gestion de datos.odb",NULL)
+
+survival.dataSQL<-odb.queries(DB,"SurvivalTable")
+surv.data<-odb.read(DB,survival.dataSQL)
+rm(survival.dataSQL)
+
+surv.data
+
+balance.dataSQL<-odb.queries(DB,"Balance")
+balance.data<-odb.read(DB,balance.dataSQL)
+rm(balance.dataSQL)
+
+balance.data
+
+#close connection
+if(!isClosed(DB)){
+  odb.close(DB, write = FALSE) } else {
+    message("Database connection is already closed")
+  }
+```
+
+Calculamos un índice de personas-día, para analizar los gastos de la gira:
+
+```{r}
+
+balance.data$FechaFinal<-as.POSIXlt(strptime(balance.data$FechaFinal,"%Y-%m-%d"))
+
+balance.data$FechaInicio<-as.POSIXlt(strptime(balance.data$FechaInicio,"%Y-%m-%d"))
+
+balance.data$Duracion <- balance.data$FechaFinal - balance.data$FechaInicio
+
+balance.data$diasPersona <- balance.data$Asistentes*as.numeric(balance.data$Duracion)
+
+cuadro <- balance.data$Gastos/balance.data$diasPersona
+
+```
+
+Hacer un cuadro de los gastos por persona-día.
+
+```{r}
+knitr::kable(cuadro,col.names = 'Gasto diario por persona')
+```
+
