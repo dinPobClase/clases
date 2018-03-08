@@ -1,0 +1,270 @@
+---
+title: "Crecimiento logístico"
+author: "David Martínez Cascante"
+date: "8 de marzo de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Contenido
+
+> -  Teoría del crecimiento logístico
+
+> -  Detalles para el Taller de Gestión de datos
+
+> -  Dudas con instalación del ambiente de trabajo III.
+
+> -  Paso a paso del tutorial con **R**.
+
+> -  Tarea 01. Dudas
+
+> -  Metas para la próxima semana
+
+## Deducción del Modelo logístico
+
+```{r  , echo=FALSE}
+layout(matrix(1:2, ncol=2))
+
+knitr::include_graphics("C:/localRepos/dinPob/figuras/blockDiagrExpGrowth.png")
+
+knitr::include_graphics("C:/localRepos/dinPob/figuras/blockDiagrLogGrowth.png")
+
+layout(matrix(1,1))
+```
+
+
+Existe retroalimentación en el modelo logístico.
+
+## Deducción del Modelo logístico
+
+El tamaño de la población **influye** en la tasa de crecimiento intrínseco ($r_m$).
+
+> - Competencia.
+
+> - Disminución de alimento *per cápita*.
+
+> - Emigración.
+
+> - Enfermedades.
+
+## Deducción del Modelo logístico
+
+Esto quiere decir que $r_m$ ya no es una constante. 
+
+- Ahora varía con respecto al tamaño de población.
+
+- Por consiguiente, varía en el tiempo.
+
+Decimos que $\mathrm{r_m}$ está en función de $N_t$:
+
+$$
+r_m = f \left( N_t \right)
+$$
+
+## Deducción del Modelo logístico
+
+**Requerimientos de** $f \left( N_t \right)$:
+
+> -  Debe llegar a un límite de tamaño de población.
+
+> -  Debe crecer rápido al inicio.
+
+> -  Debe detener el crecimiento tras alcanzar el límite de tamaño.
+
+## Deducción del Modelo logístico
+
+$$
+  r_m = \mathrm{r_m}\left(1-\frac{N_t}{K}\right)
+$$
+
+**Ejercicio**
+
+- ¿Qué pasa cuando $N_t \to 0$?
+
+- ¿Qué pasa cuando $N_t \to K$?
+
+
+## Deducción del Modelo logístico
+
+Abrir **RStudio**,  `File --> New File --> R Script`
+
+```{r, echo=TRUE,fig.height=3, fig.width=4}
+rm <- 1; K <- 100; N <- 0:100
+
+val <- rm * (1 - (N / K))
+
+plot(N,  val,  type = "l", las = 1, lwd = 2,
+  xlab = "Tamaño de población", ylab = expression(r[m])
+  )
+```
+
+## Deducción del Modelo logístico
+
+Observamos que esa expresión si cumple con los requisitos. Entonces remplazamos esta expresión por la tasa intrínseca de crecimiento en nuestra función del crecimiento exponencial.
+
+$$
+\frac{dN}{dt}=\mathrm{r_m} N_t \left(1-\frac{N_t}{K}\right)
+$$
+
+## Ejercicio
+
+Grafique la expresión
+
+$$
+\frac{dN}{dt}=\mathrm{r_m} N_t \left(1-\frac{N_t}{K}\right)
+$$
+
+En función de $N_t$. Utilice como base el código anterior.
+
+## Respuesta
+
+```{r echo=TRUE, fig.height=3, fig.width=4}
+rm <- 1; K <- 100; N <- 0:100
+
+val <- rm * (1 - (N / K))*N
+
+plot(N,val,  type = "l", las = 1, lwd = 2,
+     xlab = "Tamaño de población",ylab = expression(dN/dt)
+  )
+```
+
+
+## Deducción del crecimiento logístico
+
+La expresión anterior es otra ecuación diferencial. Utilizando el método de *separación de variables*, podemos resolver esa expresión para conocer $N$ en función del tiempo.
+
+$$
+N_t= \frac{K}{1+\left(\frac{K}{N_0}-1\right)e^{-rt}}
+$$
+
+
+> -  ¿Qué pasa cuando $t \to \infty$
+
+> -  ¿Qué pasa cuando $t \to 0$
+
+
+## Deducción del crecimiento logístico
+
+```{r ,fig.pos='h',fig.align='center', out.width='70%',fig.cap='Crecimiento logístico, con capacidad de carga igual a cien individuos', cache=TRUE}
+r <- 0.4
+K <- 100
+N0 <- 10
+curve(
+  K/(1+((K/N0-1)*exp(-r*x))),
+  from = 0,to = 20,
+  las = 1, lwd = 2, 
+  xlab = "Tiempo", ylab = "Tamaño de Población")
+```
+
+## ¿Cuándo es máximo el crecimiento?
+
+Esto constituye un problema de máximos. Tiene una solución análitica, que consiste en encontrar los puntos críticos de la función. Y evaluar $f'(x)=0$.
+
+En este caso, necesitamos resolver:
+
+$$
+D\left[ \mathrm{r_m}N_t\left(1-\frac{N_t}{K}\right)\right]=0
+$$
+
+Y al hacerlo encontramos que el máximo crecimiento se obtiene cuando:
+
+$$
+N_t = \frac{K}{2}
+$$
+
+## ¿Cuál es el mayor crecimiento de una población?
+
+Ahora que sabemos cuándo obtenemos el mayor crecimiento, reemplazamos $N_t = \frac{K}{2}$ en:
+
+$$
+\frac{dN}{dt}=\mathrm{r_m} N_t \left(1-\frac{N_t}{K}\right)
+$$
+
+Donde obtenemos que el máximo crecimiento es igual a
+
+$$
+\frac{\mathrm{r_m}K}{4}
+$$
+
+## Cosecha de poblaciones
+
+Una de las aplicaciones más ampliamente utilizadas, y criticadas, de los *modelos logísticos* es su uso para calcular cuántos individuos (o biomasa) puede ser extraída de una población, sin provocar un crecimiento **negativo**.
+
+Si sabemos que:
+
+> Tamaño de población = Tamaño anterior + Crecimiento
+
+Entonces la premisa es que podemos cosechar una cantidad no mayor al crecimiento, y la población logrará recuperarse.
+
+
+## Máximo Rendimiento Sostenible
+
+Se define como el **crecimiento máxmimo que una población puede producir, bajo una capacidad de carga determinada. Ésta es la cantidad máxima de individuos, o biomasa, que se puede extraer de una población, sin provocar un crecimiento negativo.**
+
+Ya hemos calculado sus valores:
+
+$$
+\begin{split}
+N_{MRS} &= \frac{K}{2}\\
+MRS &= \frac{r_m K}{4}
+\end{split}
+$$
+
+
+## Parámetros de cosecha
+
+```{r , echo = FALSE, fig.height=3.5, fig.width=5,cache=TRUE}
+do <- function(){
+  rm <- 1
+K <- 100
+N <- 0:100
+
+val <- rm * (1 - (N / K))*N
+
+plot(N,
+     val,
+     type = "l", las = 1, lwd = 2,
+     xlab = "Tamaño de población",
+     ylab = expression(dN/dt),
+     axes= FALSE
+)
+
+lines(c(K/2,K/2),c(0,rm*K/4),lty=2)
+lines(c(0,K/2),c(rm*K/4,rm*K/4),lty=2)
+text(K/2,rm*K/40,pos = 4, labels = expression(frac(K,2)))
+text(K*0.1,rm*K/4,pos = 1, labels = expression(frac(r[m]*K,4)))
+  
+}
+```
+
+
+```{r, echo=FALSE,cache=TRUE}
+do()
+```
+
+## Ejercicio
+
+Suponga que existe un tanque sobre una balanza. Este tanque contiene aguas residuales, que son limpiadas por una pequeña planta del genero *Lemna*. El flujo del tanque es tal, que la masa del agua siempre se mantiene constante; de modo que la balanza solo mide el crecimiento de *Lemna*. Nos interesa mantener una población de Lemna con un rápido crecimiento; ya que éste es proporcional a la tasa de extracción de toxinas del tanque. El tanque inicia con 1 kg de *Lemna*, con una tasa de crecimiento es de 5 mg/s. Además, se ha determinado que el tanque solo soporta 100 kg de *Lemna*. ¿Cuál es el tamaño de población de *Lemna* que debería haber en el tanque para maximizar el crecimiento? ¿Cuánta biomasa debe extraer **en un día** para mantener un máximo de crecimiento? ¿A qué biomasa total debería cosechar la *Lemna*?
+
+
+
+# Dudas con instalación del ambiente de trabajo III
+
+# Paso a paso del tutorial con **R**
+
+# Tarea 01. Dudas
+
+## Metas para la próxima semana
+
+- Entregar la Tarea 01. **Fecha límite** 2018-03-14 (YYYY-MM-DD), 23:59 horas.
+
+- Entregar la Tarea 02. **Fecha límite** 2018-03-21 (YYYY-MM-DD), 23:59 horas.
+
+- Instalar **Git**.
+
+- Aún faltan personas por aceptar invitación en el foro.
+
+- Hay poca participación.
