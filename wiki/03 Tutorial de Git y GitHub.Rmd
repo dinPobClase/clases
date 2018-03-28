@@ -63,7 +63,7 @@ git config --global --list
 
 ## Configuración de seguridad
 
-Hay dos protocolos principales para comunicarse seguramente desde su ordenador hasta los servidores con los repositorios de nuestros proyectos. La primera es el protocolo *HTTPS*, que nos solicitará nuestro usuario y clave de GitHub (o del servicio que estemos utilizando), cada vez que queramos subir cambios o descargar cambios. El segundo protocolo es el *SSH* que trabaja con una llave que se genera desde RStudio, y que evita estar digitando el password cada vez que queramos interaccionar con el servidor.
+Hay dos protocolos principales para comunicarse seguramente desde su ordenador hasta los servidores con los repositorios de nuestros proyectos. La primera es el protocolo *HTTPS*, que nos solicitará nuestro usuario y clave de GitHub (o del servicio que estemos utilizando), cada vez que queramos subir cambios o descargar cambios. El segundo protocolo es el *SSH* que trabaja con una llave que se genera desde RStudio, y que evita estar escribiendo el password cada vez que queramos interaccionar con el servidor.
 
 
 Para generar una clave SSH para comunicarte con GitHub, ve a `Tools --> Global Options --> Git\SVN --> Create RSA key`. Luego, en la misma ventana ve a `View public key`, y copia el contenido.
@@ -170,7 +170,7 @@ git log --oneline
 
 ## Push y Pull
 
-**Push** es el equivalente de *cargar cambio* o *upload*. Quiere decir, que desde nuestro ordenador local, 'empujamos' los cambios al repositorio. Esto solo funciona si hemos configurado el repositorio remoto. Por suerte, RStudio hace est por nosotros cuando configuramos el proyecto en los primeros pasos del tutorial.  Podemos confirmar que todo está bien en la Terminal:
+**Push** es el equivalente de *cargar cambio* o *upload*. Quiere decir, que desde nuestro ordenador local, 'empujamos' los cambios al repositorio. Esto solo funciona si hemos configurado el repositorio remoto. Por suerte, RStudio hace esto por nosotros cuando configuramos el proyecto en los primeros pasos del tutorial.  Podemos confirmar que todo está bien en la Terminal:
 
 ```
 $ git remote -v
@@ -232,7 +232,7 @@ Aquí irá el marco teórico en el original.
 
 Hacemos un commit que diga: `nueva estructura-master`.
 
-Vemos que ambas ramas compiten por las mismas líneas de texto. Esto hace que Git identifique un conflicto, cuando vayamos a fusionar las líneas de trabajo. Esto es bueno; ya que, evitará que sobreescribamos líneas de los archivos de una rama a los archivos de la otra. En lugar de esto, Git nos dejará escoger cuáles cambios queremos conservar, independientemente de la rama en la que estén. Es hora de pasar al siguiente comando fundamental.
+Vemos que ambas ramas compiten por las mismas líneas de texto. Esto hace que Git identifique un conflicto, cuando vayamos a fusionar las líneas de trabajo. Esto es bueno; ya que, evitará que sobre-escribamos líneas de los archivos de una rama a los archivos de la otra. En lugar de esto, Git nos dejará escoger cuáles cambios queremos conservar, independientemente de la rama en la que estén. Es hora de pasar al siguiente comando fundamental.
 
 
 ## Merge
@@ -284,7 +284,7 @@ Ahora la introducción irá aquí
 
 Observando el documento detenidamente, vemos que las líneas antes del puntero `<<<<<<< HEAD` ya fueron fusionadas con la *rama1*. Sabemos esto, porque coincide con el contenido de `prueba.txt` de la *rama1*, y no coincide con la rama *master*. Posteriormente, vemos que lo que está entre `<<<<<<< HEAD`, y `||||||| merged common ancestors` corresponde a los últimos cambios que guardamos en la rama *master* (bajo el commit `nueva estructura-master`).
 
-Lo que se encuetra entre `||||||| merged common ancestors` y `=======`, corresponde al último ancestro común antes de que la rama *master* y *rama1* divirgieran. Y, por último, tenemos los cambios que se encuentran entre `=======` y `>>>>>>> rama1`, que corresponden a las inserciones hechas en la *rama1* y que difieren del master.
+Lo que se encuentra entre `||||||| merged common ancestors` y `=======`, corresponde al último ancestro común antes de que la rama *master* y *rama1* divergieran. Y, por último, tenemos los cambios que se encuentran entre `=======` y `>>>>>>> rama1`, que corresponden a las inserciones hechas en la *rama1* y que difieren del master.
 
 Es nuestro trabajo encontrar la manera en que queremos conservar el nuevo archivo. Podemos hacer una mezcla tanto de la rama *master*, la *rama1* y el *ancestro común*. En nuestro caso, queremos que el archivo luzca así:
 
@@ -320,4 +320,4 @@ $ git push origin --delete rama1
 
 Podemos seguir la historia de lo que hemos hecho, de manera gráfica. Para ello, usamos el botón del reloj. Ahora vemos la historia de nuestros commits, y las ramas representadas de manera gráfica.
 
-![Historial de cambios](https://github.com/dinPobClase/clases/blob/master/wiki/03_History_Tree_png)
+![Historial de cambios](https://github.com/dinPobClase/clases/blob/master/wiki/03_History_Tree.png)
