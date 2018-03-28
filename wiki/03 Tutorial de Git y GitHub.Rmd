@@ -1,0 +1,318 @@
+---
+title: "Tutorial de Git y GitHub"
+output: github_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Git y GitHub
+
+**Git** es el software de control de versión. Con él, se pueden trazar todos los cambios realizados en un proyecto, hacer ramas para cambios experimentales, antes de decidir incluirlos en la línea de desarrollo principal, y colaborar con muchas otras personas en un mismo proyecto de manera ordenada.
+
+Git se utiliza desde la línea de comando de Windows, o desde su propia interfaz llamada **Git Bash**. Las funciones más comunes han sido trasladadas a un interfase interactiva en **RStudio**, así que son pocos los comandos que debemos utilizar. Sin embargo, es importante saber que las versiones recientes de RStudio incorporan una nueva opción para trabajar desde la línea de comandos de Windows, o del **Git Bash**.
+
+***
+
+Para acceder a la línea de comandos, que llamaremos a partir de ahora: *la terminal*, vamos a la barra de herramientas de RStudio: `Tools-->Global Options-->Terminal`, aquí podremos escoger si queremos abrir el Git Bash, o la terminal de Windows, cualquiera de las dos es útil. Posteriormente, en la barra de herramientas: `Tools-->Terminal-->New Terminal`. Notaremos que en el panel inferior izquierdo de RStudio, hay al menos dos pestañas: *Console*, y *Terminal*. La primera es la línea de comando de **R**, la segunda es la terminal que acabamos de configurar. Más adelante veremos su uso.
+
+***
+
+**GitHub** es un sitio web donde se almacenan tus proyectos para colaborar con otras personas, o simplemente, para tener un respaldo en la nube. Uno no necesita de GitHub para trabajar con Git, es decir, uno puede llevar un control local de un proyecto en un ordenador determinado.
+
+Una excelente guía, en inglés, para utilizar Git, GitHub y RStudio se encuentra [aquí](http://r-pkgs.had.co.nz/git.html). Existe un libro gratis sobre el tema, que es bastante extensivo, y fue desarrollado por uno de los encargados de **GitHub**. [Ir al libro.](https://git-scm.com/book/en/v2)
+
+## Crea una cuenta en GitHub
+
+Crear una cuenta en [**GitHub**](https://github.com/) es un procedimiento estándar. Has un perfil de usuario, elige un nombre corto (por si vas a participar con otros) y listo.
+
+# Configura Git
+
+Git mantiene control de los cambios en los archivos de un proyecto. Antes de iniciar, debemos decirle quienes somos, para que cada cambio que realicemos lo firme a nuestro nombre de usuario; esto es muy importante cuando se trabaja en proyectos colaborativos. En la *Terminal* que configuramos desde RStudio, indicamos nuestro nombre de usuario (idealmente, el mismo usuario de GitHub), y un correo electrónico (use las comillas).
+
+```
+git config --global user.name "TU NOMBRE COMPLETO"
+git config --global user.email "mi_email@ejemplo.com"
+```
+El siguiente paso es configurar un editor de texto. Esto lo utilizaremos en pocas ocasiones; pero, es importante, ya que el editor por defecto es complicado de utilizar y puede ser desalentador a quienes no tenemos experiencia con él.
+
+Las nuevas versiones de Git, incluyen una opción para instalar el **Notepad ++**. Esto se puede hacer durante la instalación del software. Sin embargo, si no lo hicimos, debemos seguir estos pasos: 1. Descargar Notepad++; 2. Digitar la siguiente línea en la Terminal:
+
+```
+$ git config --global core.editor "'C:/Program Files/Notepad++/notepad++.exe' -multilnst -notabbar -nosession -noPlugin"
+```
+
+También es posible utilizar el **Notepad** que viene por defecto en Windows. Esta es la opción más sencilla. Podemos configurar que Git utilice Notepad, con el siguiente comando:
+
+```
+git config core.editor notepad
+```
+
+Más adelante necesitaremos resolver conflictos, un colaborador haga cambios que compitan con los cambios de otro colaborador. Por ello, desde ahora escribiremos:
+
+```
+git config --global merge.conflictstyle diff3
+```
+
+Ahora verificamos que hemos configurado correctamente Git:
+
+```
+git config --global --list
+```
+
+## Configuración de seguridad
+
+Hay dos protocolos principales para comunicarse seguramente desde su ordenador hasta los servidores con los repositorios de nuestros proyectos. La primera es el protocolo *HTTPS*, que nos solicitará nuestro usuario y clave de GitHub (o del servicio que estemos utilizando), cada vez que queramos subir cambios o descargar cambios. El segundo protocolo es el *SSH* que trabaja con una llave que se genera desde RStudio, y que evita estar digitando el password cada vez que queramos interaccionar con el servidor.
+
+
+Para generar una clave SSH para comunicarte con GitHub, ve a `Tools --> Global Options --> Git\SVN --> Create RSA key`. Luego, en la misma ventana ve a `View public key`, y copia el contenido.
+
+En GitHub, ve a configuración (esta en un menú debajo de la foto de perfil). Busca la opción `SSH and GPG keys`. Da un click en `New SSH key`. En el espacio *Key* pega la clave que se generó en RStudio, y dale un nombre (como el nombre de tu computador, para saber que estás subiendo los cambios desde ahí). Finalmente haz click en `Add key`.
+
+Ahora, RStudio puede comunicarse de manera segura con GitHub. Esto impide que cualquier otra persona modifique tu repositorio.
+
+# Ejemplo
+
+Aprenderemos el uso de Git con un ejemplo sencillo. Haremos un documento de texto, el cual modificaremos en distintas formas para explorar los usos de Git.
+
+## Crear un proyecto con control de cambios
+
+### Iniciar con un proyecto limpio
+
+Esta es la forma más fácil de iniciar un proyecto en Git. Si queremos que nuestro proyecto tenga un respaldo en línea, lo primero que debemos hacer es crear un nuevo repositorio desde GitHub. Para ello, vamos al inicio de la página (buscamos el ícono del gato, *octocat*, y buscamos un botón verde que dice *New Repository*). Llenamos la información que indica GitHub, y creamos el repositorio en línea. Nombraremos este repositorio como `empezarcongit` .
+
+Una vez hecho esto, tendremos una página con varias pestañas, que varían según las opciones que escogimos en el paso anterior. En la pestaña que dice `Code<>`, encontraremos un título que dice *Quick Setup*, y bajo éste un link. Detrás del link hay dos botones, uno dice HTTPS y el otro SSH. Básicamente, esto indica que utilizaremos el protocolo HTTPS para comunicarnos con el repositorio (Ver *Configuración de Seguridad*); o que podemos escoger la opción de usar el protocolo SSH, con el pequeño botón que se encuentra a la derecha.
+
+***
+
+**NOTA**: Observamos que existen otras opciones para iniciar un repositorio. Por ejemplo, si ya contamos con un directorio de trabajo, y queremos subir algunos archivos, podemos utilizar los comandos bajo el título de **...or push an existing repository from the command line**
+
+***
+
+En este ejemplo, usaremos el protocolo HTTPS. Entonces, solo debemos dar click en el ícono de copiar. Luego, desde RStudio creamos un nuevo proyecto: `File-->New Project-->Version Control-->Git`. En este punto, saldrá una ventana que pide el `url` del repositorio. Aquí pegamos la dirección que copiamos anteriormente, y damos click en `Create`.
+
+Observamos que RStudio se ha movido a una nueva carpeta con dos archivos: `.gitignore` y `empezarcongit.Rproj`. El primero contiene archivos, o expresiones regulares, para indicar cuales archivos o carpetas deben ser ignoradas por el software de control de versión. Esto es útil cuando tenemos una serie de archivos intermedios y no nos interesa llevar ningún control sobre ellos (como los que utiliza RStudio para generar un PDF de un documento R Markdown). El segundo archivo contiene el proyecto en formato de RStudio.
+
+Ahora que tenemos configurada la carpeta, podemos añadir un pequeño archivo de texto para probar algunas ideas en git. Para ello iremos a la barra de herramientas en RStudio: `File-->New-->Text File`. Lo guardamos con el nombre de `prueba.txt` y Escribiremos esto:
+
+
+```
+# Título 1
+
+## Sección 1 Introducción
+
+Esta es la primer línea original de texto, y termina aquí.
+
+```
+
+
+## Lenguaje Git
+
+### Commit
+
+Uno puede modificar un archivo y guardarlo las veces que uno quiera. Pero para que Git siga tus cambios, es necesario indicarle al software mediante un *commit*. Supongamos que trabajamos en un reporte, en la revisión bibliográfica; podemos guardar el documento cada 5 minutos, como buena práctica, pero solo queremos decirle a Git que guarde los cambios, cuando hemos finalizado la revisión de literatura. Entonces seguimos estos pasos:
+
+1. Marcamos el archivo, o los archivos, que queremos registrar. Para ello marcamos la caja a la par del archivo, el cual debe aparecer bajo la columna *staged*
+
+1. Hacemos un comentario de una oración, breve y conciso, sobre los cambios efectuados. Si queremos añadir más detalle, dejamos una línea en blanco, y luego podemos escribir un pequeño párrafo o bullets para indicar todos los cambios realizados. 
+
+En nuestro caso, vamos a indicar que iniciamos el control de versión:
+
+FIGURA primer_commit
+
+Ahora, vamos a hacer unos cambios al documento de texto original, el cual deberá verse ahora así:
+
+```
+# Título 1
+
+## Sección 1 Introducción
+
+Esta es la primer línea original de texto, y ya no termina aquí. Ahora termina aquí.
+
+Además, añadimos esta línea.
+
+```
+
+Cuando guardamos los cambios, vemos que en el panel de Git en RStudio, aparece el archivo `prueba.txt`, con una **M** que indica que ha sido modificado. Ahora podemos ver las diferencias entre el directorio de trabajo actual, y la última versión que guardó Git (es decir, la versión del proyecto a la altura del último commit). Para ello, buscamos el botón `diff` en el panel de Git.
+
+Al hacer esto, vemos una ventana que nos muestra varias cosas: los archivos que fueron cambiados (en este caso, solo uno); las diferencias (en rojo las alteraciones y en verde las inserciones); la ventana de commit, por si queremos guardar estos cambios. Vemos un botón que dice *Revert*,para desechar todos los cambios. También podemos acceder a *revert* dando click derecho a cada archivo mostrado *en el panel de Git*, y seleccionando dicha opción. De esta manera, solo desechamos los cambios de ese archivo.
+
+En el panel de commit, añadimos estos cambios marcando la casilla del archivo `prueba.txt`, y añadimos el siguiente comentario:
+
+```
+Modificacion de linea 1, y anadida linea 2
+
+```
+
+Ahora tenemos un pequeño historial de cambios. Podemos accederlo con el botón que parece un reloj. También podemos utilizar la Terminal:
+
+```
+$$ git log --pretty=format:"%h - %an, %ar : %s"
+
+3b8cbe5 - dawidh15, 7 minutes ago : Modificacion de linea 1, y añadida
+ linea 2
+39c9f2a - dawidh15, 32 minutes ago : Inicio de control de version
+```
+
+O simplemente:
+
+
+```
+git log --oneline
+```
+
+## Push y Pull
+
+**Push** es el equivalente de *cargar cambio* o *upload*. Quiere decir, que desde nuestro ordenador local, 'empujamos' los cambios al repositorio. Esto solo funciona si hemos configurado el repositorio remoto. Por suerte, RStudio hace est por nosotros cuando configuramos el proyecto en los primeros pasos del tutorial.  Podemos confirmar que todo está bien en la Terminal:
+
+```
+$ git remote -v
+origin  https://github.com/dinPobClase/empezarcongit.git (fetch)
+origin  https://github.com/dinPobClase/empezarcongit.git (push)
+
+```
+
+**Pull** es el equivalente a *descargar cambios*. Hacemos esto si trabajamos en varios ordenadores, o con varios colaboradores. Esto hala los cambios más recientes, y los fusiona con nuestro documento. De esta manera, nos aseguramos de trabajar siempre con la última versión.
+
+![Push, Pull](https://github.com/dawidh15/dinPob/blob/master/figuras/push%20and%20pull.png)
+
+## Branch
+
+Cuando tenemos un proyecto con una línea principal de desarrollo, pero queremos introducir cambios experimentales, o que puedan impactar fuertemente la versión final, podemos crear una línea de desarrollo alternativo, o *ramas*. Podemos trabajar en las ramas de la forma que queramos, sin alterar la línea principal. Incluso, podemos mantener actualizada la rama de desarrollo con la principal en cualquier momento.
+
+Crearemos una rama en nuestro pequeño proyecto. Para ello, vamos a RStudio, en el panel de git, como se muestra abajo:
+
+
+FIGURA branching
+
+Ahora estamos en una rama llamada `rama1`. Todos los cambios que hagamos mientras estemos en esta rama se verán reflejados en el directorio de trabajo. Pero cuando queramos volver a la rama original, el directorio de trabajo será restablecido en ese punto. Es decir, los cambios que hagamos en una rama no afectan la otra.
+
+Para ver cuantas ramas tenemos, usamos `git branch` en la terminal. La rama en la que nos encontramos está señalada con un asterisco. Vamos a introducir nuevos cambios en nuestra rama. El archivo de texto ahora se verá así:
+
+```
+# Título 1
+
+## Sección 1 Marco teórico
+
+Esta es la primer línea de texto de la rama 1, y ya no termina aquí. Ahora termina aquí.
+
+
+## Sección 2. Introducción
+
+Ahora la introducción irá aquí
+
+```
+
+Guardamos los cambios en la *rama1* con un nuevo commit que dirá: `nueva estructura-rama1`.
+
+Ahora modificaremos el mismo archivo en la rama original, que por defecto se llama `master`. Podemos cambiar de rama en rama utilizando el botón de RStudio diseñado para tal efecto. Este se encuentra al lado del botón de refresh (panel Git, parte superior derecha), y contiene el nombre de la rama en la que nos encontramos trabajando. Escogemos la rama `master` bajo la sección de *Local branches*. Una vez hecho esto, Git nos informará que cambiamos de rama.
+
+Ahora modificamos el archivo `prueba.txt`, en la rama *master*. Debe verse así:
+
+
+```
+# Título 1
+
+## Sección 1 Introducción
+
+Esta es la primer línea original de texto, y ya no termina aquí. Ahora termina aquí.
+
+Además, añadimos esta línea.
+
+## Sección 2 Marco teórico
+
+Aquí irá el marco teórico en el original.
+```
+
+Hacemos un commit que diga: `nueva estructura-master`.
+
+Vemos que ambas ramas compiten por las mismas líneas de texto. Esto hace que Git identifique un conflicto, cuando vayamos a fusionar las líneas de trabajo. Esto es bueno; ya que, evitará que sobreescribamos líneas de los archivos de una rama a los archivos de la otra. En lugar de esto, Git nos dejará escoger cuáles cambios queremos conservar, independientemente de la rama en la que estén. Es hora de pasar al siguiente comando fundamental.
+
+
+## Merge
+
+El comando merge, indica que queremos fusionar los cambios de una rama en la otra. El procedimiento es el siguiente:
+
+1. Posicionarse en la rama sobre la cual queremos aplicar los cambios
+
+1. Llamar a la rama que contiene los cambios que queremos aplicar
+
+1. Resolver conflictos, si existe.
+
+1. Confirmar los cambios con un nuevo commit
+
+En nuestro ejemplo, ahora nos posicionamos en la rama `master`. Podemos hacerlo desde la Terminal con `git checkout master`. Ahora llamamos la rama que contiene los cambios que queremos aplicar:
+
+```
+$ git merge rama1
+Auto-merging prueba.txt
+CONFLICT (content): Merge conflict in prueba.txt
+Automatic merge failed; fix conflicts and then commit the result.
+```
+
+Que indica un conflicto. Luego, nos envía al archivo con los conflictos para resolverlos. Este se ve así:
+
+```
+# Título 1
+
+## Sección 1 Marco teórico
+
+Esta es la primer línea de texto de la rama 1, y ya no termina aquí. Ahora termina aquí.
+
+<<<<<<< HEAD
+Además, añadimos esta línea.
+
+## Sección 2 Marco teórico
+
+Aquí irá el marco teórico en el original.
+||||||| merged common ancestors
+Además, añadimos esta línea.
+=======
+
+## Sección 2. Introducción
+
+Ahora la introducción irá aquí
+>>>>>>> rama1
+
+```
+
+Observando el documento detenidamente, vemos que las líneas antes del puntero `<<<<<<< HEAD` ya fueron fusionadas con la *rama1*. Sabemos esto, porque coincide con el contenido de `prueba.txt` de la *rama1*, y no coincide con la rama *master*. Posteriormente, vemos que lo que está entre `<<<<<<< HEAD`, y `||||||| merged common ancestors` corresponde a los últimos cambios que guardamos en la rama *master* (bajo el commit `nueva estructura-master`).
+
+Lo que se encuetra entre `||||||| merged common ancestors` y `=======`, corresponde al último ancestro común antes de que la rama *master* y *rama1* divirgieran. Y, por último, tenemos los cambios que se encuentran entre `=======` y `>>>>>>> rama1`, que corresponden a las inserciones hechas en la *rama1* y que difieren del master.
+
+Es nuestro trabajo encontrar la manera en que queremos conservar el nuevo archivo. Podemos hacer una mezcla tanto de la rama *master*, la *rama1* y el *ancestro común*. En nuestro caso, queremos que el archivo luzca así:
+
+```
+# Título 1
+
+## Sección 1 Marco teórico
+
+Esta es la primer línea de texto de la rama 1, y ya no termina aquí. Ahora termina aquí.
+
+Además, añadimos esta línea.
+
+## Sección 2. Introducción
+
+Ahora la introducción irá aquí
+
+```
+
+Y hacemos un commit que diga: `merge con rama1`. Vemos que nuestro archivo que conserva algunos elementos del *master*, pero que los cambios de *rama1* ahora dominan. Una vez resueltos los conflictos, subimos los cambios al repositorio digital, desde la rama *master* con el comando  `git push`. Luego, cambiamos a la *rama1*, y fusionamos los cambios desde el origen con `git fetch origin`, y luego `git merge origin/master`. Finalmente, subimos los cambios al repositorio en línea, en la rama *rama1*, con un nuevo `git push`
+
+En este punto tanto *master*, como *rama1* han sido sincronizadas. Si ya no vamos a trabajar en *rama1*, podemos borrarla localmente y luego en el repositorio remoto:
+
+```
+$ git branch -d rama1
+Deleted branch rama1 (was 3142007).
+```
+
+Luego la borramos del repositorio en línea:
+
+```
+$ git push origin --delete rama1
+```
+
+Podemos seguir la historia de lo que hemos hecho, de manera gráfica. Para ello, usamos el botón del reloj. Ahora vemos la historia de nuestros commits, y las ramas representadas de manera gráfica.
+
+FIGURA history
