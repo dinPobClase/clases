@@ -1,0 +1,175 @@
+---
+title: "Tablas de vida"
+author: "David Martínez Cascante"
+date: "5 de abril de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+source("C:/localRepos/dinPob/source.R")
+
+ob <- objects()
+
+rm(list = ob[-(grep("(tablaVida)+|(plotSiphonariaCC)+",ob)) ])
+objects()
+```
+
+## Contenido
+
+> - Curvas de sobrevivencia
+
+> - Curvas de captura
+
+> -  Ejercicio 1. Curvas de captura
+
+> -  Dudas con la Tarea 04
+
+> -  Trabajo individual, instrucciones
+
+> -  Sesión de **Git**
+
+> -  Tarea 03, instrucciones
+
+> -  Metas para la próxima semana
+
+## Curvas de sobrevivencia
+
+Ayudan a interpretar las estrategias de crianza. Por ejemplo, si hay cuido parental, o si dependen de una gran fecundidad, por la alta mortalidad de juveniles.
+
+```{r}
+M <- matrix(c(
+  1:15,
+  608,487,480,472,465,447,419,390,348,268,154,59,4,2,0
+), ncol = 2,
+byrow = FALSE)
+
+colnames(M) <- c("x","Sx")
+
+lf <- tablaVida(x.sup=M[,"x"],Sx=M[,"Sx"])
+```
+
+```{r echo=FALSE,fig.height=3.5, message=FALSE, warning=FALSE, fig.pos='h!'}
+op <- par()
+par( mar = c(5, 5, 4, 5) + 0.1)
+
+plot(lf[,1],lf[,4]*1000,
+     xlab = "Edad", ylab = "", axes = FALSE, type = "n",
+     main = "Curva de supervivencia y mortalidad\nde la cabra de monte")
+
+axis(side = 1, at = lf[,1])
+
+axis(side = 2, at = c(0,500,1000))
+lines(lf[,1],lf[,4]*1000, lwd = 2)
+mtext(side = 2, "Supervivencia x 1000",  line = 3)
+
+axis(side = 4, at = c(0,500,1000))
+lines(lf[,1],lf[,6]*1000, lwd = 2, lty = 2, col = "darkgray")
+mtext(side = 4, "Mortalidad x 1000", line = 3)
+
+legend("top", legend = c("Supervivencia", "mortalidad"),
+       lty = c(1,2), lwd = c(2,2), col = c(1, "darkgray"))
+par(op)# restaurar valores por defecto para plot
+```
+
+## Análisis de curvas de captura
+
+Este análisis permite estimar un parámetro de supervivencia común, a todas las clases de edad.
+
+Está lejos de ser la estimación ideal, pero es útil cuando solo tenemos datos del número de supervivientes por clase de edad o talla, en un muestreo puntual (tabla de vida vertical).
+
+Referencias detalladas en:
+
+> Skalski, J. R., Ryding, K. E., & Millspaugh, J. (2005). Wildlife demography: analysis of sex, age, and count data. Academic Press. Elsevier.
+
+## Supuestos del modelo
+
+1. Existe una estructura de edad estable.
+
+1. La población es estacionaria.
+
+1. Todos los animales tienen una misma probabilidad de selección(captura).
+
+1. La muestra es representativa de la población.
+
+1. El destino de todos los animales es independiente.
+
+1. Todas las edades se estiman sin error.
+
+1. La probabilidad de supervivencia anual es constante a través de todas las clases de edad.
+
+## Capturabilidad
+
+No todas las clases de edad tienen la misma probabilidad de ser observadas por el investigador. Para este tipo de análisis se recomienda utilizar solo la sección descendente de la curva de captura.
+
+```{r plotSiphonariaCC, echo=FALSE, fig.align='center',fig.cap="Histograma de tallas de \\textit{Siphonaria gigas} en el RNVS Playa Hermosa-Punta Mala. Datos de 2017-2018.",fig.width=3.5,fig.height=4, fig.pos='ht!'}
+plotSiphonariaCC("C:/localRepos/dinPob/datos/chp-02-siphonaria.csv")
+```
+
+## Métodos de estimación
+
+**Método de Chapman y Robson 1960**
+
+$$
+\hat{s} = \frac{T}{n+T-1}
+$$
+
+Donde $n$ es el tamaño de la muestra. $T = \sum_{i=1}^n x_i$, es decir la suma de las edades de todos los individuos en la muestra.
+
+Y su varianza es:
+
+$$
+\mathrm{Var}(\hat{s}) = \hat{s}\left( \hat{s} - \frac{T-1}{n+T - 2} \right)
+$$
+
+## Métodos de estimación
+
+**Método de regresión**
+
+Conteo esperado en cada clase de edad:
+
+$$
+E\left( S_x \right)  = N_0 p s^x
+$$
+
+Si tomamos logaritmo a ambos lados de la expresión anterior, obtenemos:
+
+$$
+\ln(\bar{S_x}) = \ln(N_0 p) + x\ln(s)
+$$
+
+Que presenta la forma familiar de una línea recta: $y=a+bx$. Lo importante aquí, es reconocer que $s = e^b$. Así que al estimar los parámetros de la recta, podemos derivar la tasa de supervivencia $s$.
+
+
+## Métodos de estimación
+
+```{r exmRegrAquilegia, echo = TRUE, message=FALSE, warning=FALSE}
+#Definir los datos para la regresión
+y <- log(c(186, 84, 59,8)) #Sx, es el conteo de supervivientes de Aquilegia
+x <- 1:4 # Las clases de edad
+
+salida <- glm(formula = y~x, family = gaussian(link = "identity"))
+s <- signif(
+  exp(coef(salida)[2]),
+  digits = 3)
+
+sLim <- signif(
+                exp(confint(salida)[2,]),
+                digits = 3)
+
+cat(paste0("La probabilidad de supervivencia es ", s, ", \ncon un intervalo de confianza al 95% de ", sLim[1], "--", sLim[2]))
+```
+
+# Dudas con la Tarea 04
+
+# Trabajo individual, instrucciones
+
+# Sesión de **Git**
+
+# Tarea 03, instrucciones
+
+## Metas para la próxima semana
+
+- Tarea 03. Hacer un Pull Request
+
+- Presentar el tema del trabajo individual

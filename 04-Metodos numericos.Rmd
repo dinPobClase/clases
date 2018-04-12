@@ -1,0 +1,91 @@
+---
+title: "Métodos numéricos"
+author: "David Martínez Cascante"
+date: "8 de marzo de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+source("04-Metodos numéricos.R")
+
+```
+
+## Contenido
+
+> -  Metódo de Euler 
+
+> -  Ejercicio 1. Aplicar Euler en crecimiento exponencial
+
+> -  Dudas con instalación del ambiente la Tarea 01
+
+> -  Dudas con la Tarea 02
+
+> -  Trabajo grupal, instrucciones
+
+> -  Introducción a **Git**
+
+> -  Tarea 02. Ayuda con `optim`
+
+> -  Metas para la próxima semana
+
+## El método de Euler
+
+
+$$
+\frac{dN}{dt} \approx \frac{\Delta N}{\Delta t} = \frac{N_t - N_{t-\Delta t}}{\Delta t}
+$$
+
+
+
+## Euler aplicado al crecimiento exponencial
+
+$$
+\frac{N_t - N_{t-\Delta t}}{\Delta t} = r_m N
+$$
+
+Arreglando la expresión anterior, podemos despejar en terminos de $N_t$:
+
+$$
+N_t= N_{t-\Delta t} + r_m N_{t-\Delta t} \Delta t
+$$
+
+#  Ejercicio 1. Aplicar Euler en crecimiento exponencial
+
+
+##Euler aplicado al crecimiento exponencial
+
+```{r}
+fig1()
+```
+
+
+## La exactitud depende del $\Delta t$
+
+```{r}
+fig2()
+```
+
+## La exactitud depende del $\Delta t$
+
+```{r}
+fig3()
+```
+
+
+#  Dudas con la Tarea 01
+
+#  Dudas con la Tarea 02
+
+#  Trabajo grupal, instrucciones
+
+#  Introducción a **Git**
+
+#  Tarea 02. Ayuda con `optim`
+
+
+## Metas para la próxima semana
+
+
+- Entregar la Tarea 02. **Fecha límite** 2018-03-21 (YYYY-MM-DD), 23:59 horas.
+

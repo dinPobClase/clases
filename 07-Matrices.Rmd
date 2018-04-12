@@ -1,0 +1,231 @@
+---
+title: "Matrices de transición"
+author: "David Martínez Cascante"
+date: "12 de abril de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+source("C:/localRepos/dinPob/source.R")
+
+ob <- objects()
+
+rm(list = ob[-(grep("(plotWhale)+",ob)) ])
+objects()
+```
+
+## Contenido
+
+> - Matrices de transición
+
+> -  Ejercicio 1.
+
+> -  Solución de Tarea 04
+
+> -  Presentación del tema de Trabajo individual
+
+> -  Dudas con sesión de **Git**
+
+> -  Dudas con Tarea 03
+
+> -  Metas para la próxima semana
+
+
+## Matrices de transición
+
+```{r message=FALSE, warning=FALSE}
+plotWhale()
+rm(plotWhale)
+```
+
+##  Matrices de transición
+
+> - Tenemos una población con etapas
+
+> - La supervivencia se asocia mejor con las etapas, que con el tiempo
+
+> - Existe permanencia en una etapa
+
+> - También pueden usarse con clases de edad
+
+> - Representa la proporción de individuos que pasan de una etapa a la siguiente. A veces se habla de probabilidades, sin embargo, en la fecundidad la proporción de individuos de una clase adulta a una temprana puede ser mayor a uno.
+
+## Ejemplo de una MT para la orca
+
+\begingroup
+\sffamily
+\small
+
+\singlespacing
+
+||         |         |         |         |         | 
+|:-----|:--------|:--------:|:--------:|:--------:|:--------:|
+||         |         | Desde etapa|   |            |
+||           |yearling|   juvenile| mature| postreprod|
+||yearling|     0.0000|   0.0043  | 0.1132|     0.0000|
+|Hasta etapa|juvenile|     0.9775|   0.9111  | 0.0000|     0.0000|
+||mature  |     0.0000|   0.0736  | 0.9534|     0.0000|
+||postreprod|   0.0000|   0.0000  | 0.0452|     0.9804|
+
+Table: Matriz de transición para la ballena asesina.
+
+\endgroup
+
+## Como leer la matriz
+
+Por covención, la etapa de referencia se ubica en las columas. Luego se ubica la etapa de transición en las filas.
+
+¿Cuál es la probabilidad de pasar de juvenil a adulto?
+
+¿Cuál es la probabilidad de pasar de adulto a juvenil?
+
+¿Cuál es la probabilidad de pasar de adulto a yearling? ¿Qué significa?
+
+## Proyección de la matriz a $N_{t+1}$
+Vamos a llamar a esta matriz $\mathbf{A}$. 
+
+\begingroup
+\sffamily
+\small
+
+\singlespacing
+
+|           |yearling|   juvenile| mature| postreprod|
+|:--------|:--------:|:--------:|:--------:|:--------:|
+|yearling|           |$F_{jy}$  |  $F_{my}$|          |
+|juvenile|  $G_{yj}$ |$P_{j}$   |          |          |
+|mature  |           | $G_{jm}$ | $P_m$    |          |
+|postreprod|         |          | $G_{mP}$ | $P_P$    |
+
+Table: Matriz de transición para la ballena asesina, expresada de manera simbólica.
+
+\endgroup
+
+## Proyección de la matriz a $N_{t+1}$
+
+Necesitamos un vector que contenga el número de individuos en el año (o unidad correspondiente) previo al que se desea proyectar. Es decir, si queremos proyectar a $t+1$, debemos conocer el tamaño de población en el año $t$.
+
+$$
+\mathbf{n}_t = 
+\begin{pmatrix}
+n_y  \\ 
+n_j   \\
+n_m  \\
+n_P
+\end{pmatrix}
+$$
+Luego, representamos la operación como:
+
+$$
+\mathbf{n}_{t+1} = \mathbf{A}\mathbf{n}_t
+$$
+
+## Proyección de la matriz a $N_{t+1}$
+
+La expresión anterior es una forma corta de representar la multiplicación de matrices. Tanto los vectores como las matrices pueden ser representados en negrita; las matrices en mayúscula; los vectores en minúscula. Esta expresión simplifica la siguiente operación:
+
+$$
+\mathbf{n}_{t+1} = 
+\begin{pmatrix}
+      0   & F_{jy}  &  F_{my} &  0      \\
+ G_{yj} &   P_{j}  &  0        &   0      \\
+      0   & G_{jm} & P_m    &   0      \\
+      0   &   0       & G_{mP}& P_P
+ \end{pmatrix}
+\times
+\begin{pmatrix}
+n_y  \\ 
+n_j   \\
+n_m  \\
+n_P
+ \end{pmatrix}
+$$
+
+## Proyección de la matriz a $N_{t+1}$
+
+Desarrollar la multiplicación
+
+$$
+\mathbf{n}_{t+1} = 
+\begin{pmatrix}
+      0\cdot n_y   + F_{jy}\cdot n_j  +  F_{my}\cdot n_m +  0\cdot n_P      \\
+       G_{yj}\cdot n_y +  P_{j}\cdot n_j  +  0\cdot n_m  +  0\cdot n_P      \\
+      0\cdot n_y + G_{jm}\cdot n_j + P_m\cdot n_m   +   0\cdot n_P      \\
+      0\cdot n_y  +   0\cdot n_j    + G_{mP}\cdot n_m + P_P\cdot n_P
+ \end{pmatrix}
+$$
+
+## Ejercicio 1.
+
+*Hacer una proyección a $t+1$ con la matriz de transición de la ballena asesina*
+
+Vamos a asumir que se realizó un censo poblacional. Los resultados del censo fueron:
+
+$$
+\mathbf{n}_t = 
+\begin{pmatrix}
+123  \\ 
+87   \\
+60  \\
+64
+\end{pmatrix}
+$$
+
+Usar la matriz de transición de la ballena orca, y calcular $n_{t+1}$:
+
+##Solución
+
+$$
+\mathbf{n}_{t+1} = 
+\begin{pmatrix}
+      0\cdot 123   + 0.0043  \cdot 87  +  0.1132\cdot 60 +  0\cdot 64      \\
+       0.9775\cdot 123 +  0.9111\cdot 87+  0\cdot 60+  0\cdot 64      \\
+      0\cdot 123 + 0.0736  \cdot 87 + 0.9534\cdot 60 +   0\cdot 64      \\
+      0\cdot 123 +0\cdot 87    + 0.0452\cdot 60 + 0.9804\cdot 64
+ \end{pmatrix}
+$$
+
+El resultado es:
+
+$$
+\mathbf{n}_{t+1} = 
+\begin{pmatrix}
+7.17  \\ 
+199.5   \\
+63.6  \\
+65.5
+\end{pmatrix}
+$$
+
+##Solución en **R**
+
+```{r, echo=TRUE}
+library(popbio)
+data(whale)
+
+nt <- c(123, 87, 60, 64)
+
+ntp1 <- whale%*%nt # el '%*%'representa el operador para multiplicar
+                    # matrices en R
+
+ntp1
+
+#limpiar
+detach("package:popbio", unload = TRUE)
+rm(whale, ntp1, nt)
+```
+
+# Solución de Tarea 04
+
+# Presentación del tema de Trabajo individual
+
+# Dudas con sesión de **Git**
+
+# Dudas con Tarea 03
+
+## Metas para la próxima semana
+
+- Meta de avance 1, del trabajo grupal
+
+- Presentar evidencia de la Tarea 03
