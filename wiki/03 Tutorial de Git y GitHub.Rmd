@@ -49,7 +49,7 @@ También es posible utilizar el **Notepad** que viene por defecto en Windows. Es
 git config core.editor notepad
 ```
 
-Más adelante necesitaremos resolver conflictos, un colaborador haga cambios que compitan con los cambios de otro colaborador. Por ello, desde ahora escribiremos:
+Más adelante necesitaremos resolver conflictos entre diferentes versiones de un mismo archivo. Por ello, desde ahora escribiremos:
 
 ```
 git config --global merge.conflictstyle diff3
