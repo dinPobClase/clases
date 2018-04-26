@@ -1,0 +1,229 @@
+---
+title: "popbio"
+author: "David Martínez Cascante"
+date: "26 de abril de 2018"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Contenido
+
+> -  popbio
+
+> -  Practica con popbio
+
+> -  Tarea 05 instrucciones
+
+> -  Metas de trabajo grupal
+
+> -  Metas para la próxima semana
+
+## popbio
+
+Es un paquete de R.  Tiene buena documentación introductoria:
+
+Stubben, C., & Milligan, B. (2007). Estimating and analyzing demographic models. Journal Of Statistical Software, 22(11), 1–23. https://doi.org/10.18637/jss.v022.i11
+
+> - Asume que existen buenos datos.
+
+> - Basado en paquete de MatLab
+
+## ¿Qué hace?
+
+- Proyección de matrices
+
+- Cálculo de parámetros como $R_0$, y $T_c$
+
+- Proyección estocástica de matrices
+
+- Análisis de viabilidad poblacional sencillos
+
+```
+demo("stage.classify")
+demo("fillmore")
+```
+
+Incluye conjunto de datos de práctica.
+
+## Proyección de matrices
+
+- `pop.projection(TM,n0,t)`: Proyecta una población.
+
+    - `TM`: matriz de transición; `n0`: vector de tamaño de población inicial;- `t`: cantidad de tiempo que se desea proyectar. 
+    
+    Devuelve valores como
+    
+    - `$lambda`: $\lambda$,
+    
+    - `$stable.stage`: la proporción estable de clases de edad, o etapas, en una población; 
+    
+    - `$stage.vectors`: la cantidad de individuos en cada clase de edad o etapa, desde el tiempo cero hasta el tiempo `t`; 
+    
+    - `$pop.sizes`: vector con el tamaño de la población total, desde el tiempo cero hasta el tiempo `t`; 
+    
+    - `$pop.changes`: el $\lambda$ desde el tiempo cero hasta el tiempo `t`.
+
+- `stage.vector.plot(stage.vectors, col)`: grafica la matriz de transición con respecto al tiempo. `stage.vectors`: recibe la salida de la función `pop.projection`, específicamente el vector: `$stage.vectors`. El argumento `col` es una secuencia de enteros, con las columnas que se desean graficar.
+
+## Parámetros poblacionales
+
+- `fundamental.matrix(TM)`: Recibe una matriz de transición y devuelve una matriz fundamental, con los errores de estimación.
+
+- La matriz fundamental tiene la misma estructura que una matriz de transición, pero sus elementos contienen el número de unidades de tiempo que pasa cada individuo en una *etapa* de crecimiento. Es apropiada para poblaciones con crecimiento estructurado por etapas.
+
+- `net.reproductive.rate(TM)`: Devuelve el $R_0$ de una matriz de transición.
+
+- `generation.time(TM)`: Devuelve el $T_c$ de una matriz de transición.
+
+## Proyecciones estocásticas
+
+`stoch.projection(matrices,n0,tmax,nreps,...)`: Genera una proyección estocástica de una población.
+
+- `matrices`: Lista de matrices de transición (creadas a partir de la estimación de una matriz con valores de tendencia central y de dispersión. `n0`: vector con tamaño inicial de población;
+
+- `tmax`: entero con el número de pasos de tiempo que quieren predecirse a futuro;
+- `nreps`: número de pasos a iterar. Los detalles del método se encuentran en  @stochPVA.
+
+`stoch.growth.rate(matrices)`: Versión estocástica para calcular *el logaritmo* de la tasa de crecimiento.
+
+## Calcula la probabilidad de cuasi-extinción
+
+- `stoch.quasi.ext(matrices, n0, Nx, tmax, maxruns, nreps)`. Hace una proyección de la probabilidad de extinción de una población. Cuyos argumentos son:
+    
+    - `matrices`: Una lista con dos o más matrices de transición
+    
+    - `n0`: Vector con tamaño de población inicial.
+    
+    - `Nx`: Umbral de quasi-extinción.
+    
+    - `tmax`:	número de pasos a proyectar en el futuro.
+    
+    - `maxruns`: Número de veces que se simula la distribución acumulativa	sobre la probabilidad de extinción.
+    
+    - `nreps`: Número de iteraciones.
+    
+## ... pero el profe los chinea
+
+El documento `Source.R` en el repositorio del material del curso contiene facilidades para usar el paquete.
+
+```{r, echo = TRUE, eval=TRUE}
+library(popbio)
+data(whale)
+source("C:/localRepos/dinPob/Source.R")
+
+whaleTM <- transMat$new(
+    matriz=whale,
+    n0 = c(100,80,60,40),
+    t = 15
+)
+```
+
+## Población en el tiempo
+
+`transMat$plotTM()`
+
+```{r whaleplotTM, echo=FALSE, fig.align='center', fig.cap='Resultados de la proyección de la matriz de transición', fig.pos='ht!', fig.width=8.5}
+whaleTM$plotTM()
+```
+
+## Graficar etapas
+
+`transMat$plotStage()`
+
+```{r whaleplotStage, echo=FALSE, fig.align='center', fig.cap='Proporción de la población en cada etapa de edad', fig.pos='ht!', fig.width=8.5}
+whaleTM$plotStage()
+```
+
+## Otras funciones
+
+```{r, echo=TRUE}
+# La tasa de multiplicación
+whaleTM$darLambda()
+
+#La tasa de crecimiento neto
+whaleTM$darR0()
+
+#El tiempo de generación
+whaleTM$darTc()
+```
+
+
+##  Estocasticidad
+
+clase de referencia `transStochMat`
+
+```{r hudsoniaDatos, echo = TRUE, cache=TRUE, results='hide'}
+
+# hudsonia es una lista de matrices de transición
+data("hudsonia")
+n <- c(4264, 3, 30, 16, 25, 5)
+names(n) <-
+  c("seed", "seedlings", "tiny", "small", "medium", "large")
+
+
+hudsoniaStoch <- transStochMat$new(
+  matriz = hudsonia,
+  n0 = n,
+  t = 50,
+  umbral = 10,# Número de plantas con potencial reproductivo.
+  incluirEtapa = c(0,1,1,1,1,1)
+)
+```
+
+## Tamaño de población
+
+`hudsoniaStoch$plotN()`
+
+```{r hudsoniaplotN, echo=FALSE, fig.align='center', fig.cap='Población total de \\textit{hudsonia} a 50 años', fig.pos='ht!', fig.width=5.5,cache=TRUE}
+hudsoniaStoch$plotN()
+```
+
+## Probabilidad de cuasi-extinción
+
+`hudsoniaStoch$plotExtProb()`
+
+```{r hudsoniaplotExtProb, echo=FALSE, fig.align='center', fig.cap='Probabilidad de extinción de \\textit{hudsonia} a 50 años. Umbral de quasi-extición 10 individuos sobre tierra.', fig.pos='ht!', fig.width=5.5,cache=TRUE}
+hudsoniaStoch$plotExtProb()
+```
+
+## Otros goodies
+
+
+```{r, echo=TRUE}
+# GR estocástico
+hudsoniaStoch$darGR()
+```
+
+## Para la Tarea...
+
+```{r, echo=TRUE}
+hudsoniaStoch$extProb()
+```
+
+## Tarea 05 instrucciones
+
+- Ver sección de asignaciones
+
+- Descargar plantilla
+
+- Entregar avance el 3 de mayo antes de clase.
+
+- Entregar tarea el 10 de mayo antes de la clase. Si se entrega después de esa fecha y antes del 17 de mayo, se evalúa sobre la mitad. No se reciben tareas después del 17 de mayo.
+
+# Avances del trabajo grupal
+
+## Metas de trabajo grupal
+
+Con base en lo estudiado sobre *Lobatus*, realice sus predicciones para:
+
+- La tasa de crecimiento ($>1$, 1, $<1$).
+
+- Definir el procedimiento de análisis para calcular la probabilidad de extinción a 5 años.
+
+La meta está establecida para el 3 de mayo, antes de la clase. Si se entrega después del 3 de mayo y antes del 10, se evalua sobre la mitad del valor. Si se entrega después del 10 de mayo pierden todo el puntaje.  Aún así forma parte del trabajo grupal.
+
+
+
