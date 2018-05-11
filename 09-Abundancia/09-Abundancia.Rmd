@@ -53,19 +53,16 @@ La diferencia radica, en que el conteo depende de la abundancia y la *probabilid
 
 ## Probabilidad de detección
 
-
 ```{r,fig.align='center', out.width=600}
 knitr::include_graphics("find_the_frog.png")
 ```
-## Probabilidad de detección
-
+## Probabilidad de detección, otro ejemplo
 
 ```{r,fig.align='center', out.width=600}
 knitr::include_graphics("find_the_frog2.png")
 ```
 
-## Probabilidad de detección
-
+## Probabilidad de detección, la última
 
 ```{r,fig.align='center', out.width=600}
 knitr::include_graphics("find_the_frog3.png")
@@ -207,6 +204,142 @@ plot(80:140, sapply(
 abline(v = salida$par, lwd = 3, col = "red")
 axis(side=1)
 ```
+
+## Otra práctoca!!
+
+Estimación de $N$ y $p$ por medio de muestreos con remoción.
+
+El modelo:
+
+$$
+y_i \sim
+\begin{cases}
+\text{Bin}(N,p),\ k=1\\
+\text{Bin}(N-\sum_{i=1}^k y_i,p),\ k>1
+\end{cases}
+$$
+
+## Traducido en R
+
+```{r c4simRemov, results='hide', echo=TRUE}
+set.seed(1934)
+N <- 100
+p <- 0.30
+n <- 5# número de remociones
+y <- numeric()
+
+for ( k in 1:n){
+  if (k==1){
+    y. <- rbinom(n = 1, size = 100, prob = p)
+    y <- append(y,y.)
+  } else {
+    y. <- rbinom(n = 1,size = 100 - sum(y), prob = p)
+    print(sum(y))
+    y <- append(y,y.)
+  }
+  
+}
+# n es el número de repeticiones, size = sería el tamaño poblacional
+# y prob la probabilidad de captura
+
+cat("el vector de conteos es ",y,"\n")
+```
+
+## Capturas acumuladas
+
+Calculamos una nueva variable, que nos ayuda en el proceso.
+
+$$
+c_i =
+\begin{cases}
+0,\ k=1\\
+\sum_{i=1}^k y_i,\ k>1
+\end{cases}
+$$
+
+## Traducido en R
+
+
+```{r c4C, echo=TRUE}
+c <- 0
+
+c <- append(c,cumsum(y), after = 1)
+
+c <- c[-length(c)]# último elemento no se usa
+
+c
+```
+
+## La verosimilitud
+
+Ahora nuestra función de verosimilitud es:
+
+$$
+nlL(N,p) = \sum_{i =1}^n \log\left( \text{Binomial}(y_i|N-\mathrm{c_i},p)\right)
+$$
+
+Nótese la inclusión de $c$ en la función.
+
+## En R..
+
+```{r p4logLikRemov, echo=TRUE, results='hide', cache=TRUE}
+# Función de 'menos log-verosimilitud'
+nlL <- function(p,c){#p, se refiere a parámetros. 
+  N <- floor(p[1])
+  N <- ifelse(N <= max(c), max(c), N)# Si es menor al número acumulado de
+                              #individuos, lo fija al límite inferior.
+  x <- p[2]
+  probCap <- exp(x)/(1+exp(x))# calcula un valor entre 0 y 1
+  
+  valor <- -1*sum( dbinom(y, size = N-c, prob = probCap,log = TRUE) )
+  
+  # A veces trabajar con logaritmos genera valores irreales.
+  # Solo queremos valores válidos. El paso de abajo hace esto.
+  valor <- valor[which(!is.na(valor) | !is.nan(valor) | valor != -Inf)]
+  return(valor)
+}
+
+```
+
+## Función generadora
+
+```{r p4logGenRemov, echo=TRUE, results='hide', cache=TRUE}
+gen <- function(p,c){#p, se refiere a parámetros. 
+  N <- floor(p[1])
+  N <- ifelse(N <= max(c), max(c)+1, N)
+  N <- N + sample(c(-1,1),size=1,prob = c(0.5,0.5))
+  
+  x <- p[2]
+  x <- x + rnorm(1,0,0.2)
+  return(p=c(N,x))
+}
+```
+
+## Corremos la optimización
+
+```{r c4salidaRemov, echo = TRUE,cache=TRUE}
+salida <-
+  optim(
+  par = c(max(c)*1.1,0),# valores iniciales
+  fn = nlL,
+  gr = gen,
+  c=c,
+  method = "SANN",
+  control = list(maxit=50000)
+  )
+
+salida
+```
+
+## Expit... convertir a probabilidades
+
+En este caso particular, tenemos que convertir a una escala apropiada para probabilidades, el segundo valor de `salida$par`. Para ello, utilizamos una función llamada *expit* que mapea los valores $expit: \left\{-\infty,\infty\right\} \mapsto \left\{0,1\right\}$. La función *expit* es igual a $exp(x)/(1+exp(x))$.
+
+```{r c4pEst, echo=TRUE, cache=TRUE}
+p_est <- exp(salida$par[2])/(1+exp(salida$par[2]))
+p_est
+```
+
 
 ## Tarea 05 
 
