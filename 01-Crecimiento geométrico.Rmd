@@ -1,7 +1,7 @@
 ---
 title: "Crecimiento geométrico"
 author: "David Martínez Cascante"
-date: "18 de febrero de 2018"
+date: "20 de febrero de 2019"
 output: ioslides_presentation
 ---
 
@@ -12,6 +12,10 @@ knitr::opts_chunk$set(echo = FALSE)
 
 ## Contenidos
 
+> - Las poblaciones como un sistemas
+
+> - Las dos grandes modelos de la ecología de poblaciones
+
 > -  Teoría del crecimiento geométrico
 
 > -  Modificaciones al programa de estudio
@@ -19,8 +23,6 @@ knitr::opts_chunk$set(echo = FALSE)
 > -  Dudas con instalación del ambiente de trabajo
 
 > -  Ambiente **RStudio**, y repaso del tutorial con **R**.
-
-> -  Tarea 01. Instrucciones
 
 > -  Metas para la próxima semana
 
@@ -55,12 +57,27 @@ Berryman, A. A., & Kindlmann, P. (2008). Population systems: a general introduct
 ## Dinámica del sistema
 
 ![Dinámica del sistema](C:\localRepos\clases\figs\C01-Change in State.png)
-
 ## Ecología de poblaciones
 
 >   Berryman y Kindlmann (2008), nos exhortan a pensar que la *Ecología de Poblaciones* es un proceso de ingeniería inversa, donde el sistema existe, y nos interesa saber cómo funciona.
 
 ![Dinámica del sistema](C:\localRepos\clases\figs\PopSystemBook.png)
+
+## Los dos grandes Modelos de la Ecología de poblaciones
+
+> - Modelos basados en individuos (agentes): IBM
+
+  > - Simulan la interacción de componentes individuales en un sistema y analizan los patrones generales.
+    
+  > - [Colección de modelos](https://www.red3d.com/cwr/ibm.html).
+  
+  > - [The nature of code](https://natureofcode.com/). Buena introducción a la programación de objetos y sistemas. [Videos de los capítulos](https://www.youtube.com/user/shiffman/playlists?shelf_id=6&view=50&sort=dd).
+    
+  > - [Libro IBM](http://www2.humboldt.edu/ecomodel/documents/Grimm-Railsback05.pdf).
+
+> - Modelos Poblacionales ($N$)
+    
+  > - Expresiones matemáticas
 
 # ¿Por qué crecen las poblaciones?
 
