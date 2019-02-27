@@ -13,13 +13,11 @@ knitr::opts_chunk$set(echo = FALSE)
 
 > -  Teoría del crecimiento exponencial
 
-> -  Fechas para el Taller de Gestión de datos
-
 > -  Dudas con instalación del ambiente de trabajo II.
 
-> -  Paso a paso del tutorial con **R**.
+> -  Paso a paso del tutorial con **Rmarkdown**.
 
-> -  Tarea 01. Dudas
+> -  Tarea 01. Presentación.
 
 > -  Metas para la próxima semana
 
@@ -112,6 +110,86 @@ $$
 $$
 
 Esto es interesante porque $\mathrm{r_m}$ es fácilmente escalable. Por ejemplo, si nos dan la tasa intrínseca de crecimiento en días, pero queremos utilizarla en semanas, hacemos que $\mathrm{r_s}=7\times \mathrm{r_d}$.
+
+## Ejemplo 1
+
+En un cultivo de una especie presa, para un programa de reintroducción de su depredador, se cuenta con un presupuesto de 2,000,000 CRC para mejorar la producción de éstos animales.
+
+El diseño experimental requiere de 40 recipientes acondicionados con diferentes tratamientos.
+
+Las presas tienen una tasa de crecimiento intrínseco  de $r_m = 0.098d^{-1}$. 
+
+El inóculo inicial es de 1000 individuos por recipiente. Si se sabe que el costo de mantenimiento por organismo-día es de 0.5 CRC por día:
+
+*¿Cuántos organismos por recipiente se pueden cultivar sin sobrepasar el dinero disponible?  ¿Cuánto tiempo, en días, se necesitan para alcanzar esa cantidad?*
+
+## Ejemplo 1
+
+Encontrar el mínimo: *Presupuesto del experimento menos el costo es igual a cero*
+
+El costo está dado por:
+
+-  $a$: el costo de mantenimiento diario del organismo: CRC por individuo-día.
+
+-  La cantidad de organismos posibles del experimento, $N$. Cuyo número está limitado por el presupuesto.
+
+-  La tasa intrínseca de crecimiento $r_m = 0.098d^{-1}$.
+
+-  El inóculo inicial $N_0 = 1000$.
+
+-  La cantidad de tanques experimentales (40 en total).
+
+-  $t$: el tiempo de generación.
+
+## Ejemplo 1
+
+
+```{r , fig.align='center', fig.pos='ht!', fig.cap='Represencación del costo por tanque, en pequeños intervalos de tiempo',echo=FALSE}
+
+ r <- 0.098; a <- 0.5; N0 <- 1000 #valores conocidos
+  Dt <- 0.5; n <- 26/Dt
+ Nt <- function(i){
+   val <- a*N0*exp(r*i)
+ }
+
+ plot(c(0,26),c(0,10000), type = "n",
+      axes = FALSE, xlab="Días desde el inicio",
+      ylab = paste0("costo por tanque ",expression(x*10^3))
+ )
+ axis(side = 1)
+ axis(side = 2, at = c(0,10000),
+      labels = c(0,10), las=2)
+ for( i in 0:n){
+   rect(xleft = i*Dt,ybottom = 0,xright = i*Dt+Dt,ytop = Nt(i*Dt), col = "gray")
+ }
+```
+
+## Ejemplo 1
+
+
+
+Esto equivale a:
+
+$$
+C = \lim_{\Delta t \to 0} \sum_{i=1}^{b}  \mathrm{a}N(t_i)\Delta t = \int_0^b\mathrm{a}N(t)dt
+$$
+
+Que equivale a resolver:
+
+$$
+\begin{split}
+C &= \mathrm{a}N_o\int_0^b e^{rt}\ dt\\
+C &= \mathrm{a}N_0(\frac{e^{b r}}{r}-\frac{1}{r})\\
+\end{split}
+$$
+
+## Ejemplo 1
+
+La solución equivale a minimizar la siguiente función:
+
+$$
+\underset{t \in \mathbb{R}^+}{\text{minimizar}} \, \left| 2\times10^6 - 40  \times\mathrm{a}N_0(\frac{e^{br}}{r}-\frac{1}{r}) \right|
+$$
 
 ## Ejercicio en clase
 
@@ -207,16 +285,16 @@ curve(exp(coef(out)[1])*exp(coef(out)[2]*x),
 ```
 
 
-# Fechas para el Taller de Gestión de datos
-
 # Dudas con instalación del ambiente de trabajo II
 
-# Paso a paso del tutorial con **R**
+# Paso a paso del tutorial con **Rmarkdown**
 
-# Tarea 01. Dudas
+# Tarea 01. Presentación
 
 ## Metas para la próxima semana
 
-- Entregar la Tarea 01. **Fecha límite** 2018-03-07 (YYYY-MM-DD), 23:59 horas.
+- Descargar **Libreoffice**.
 
-- Todos deben estar en el foro!!
+- Entregar la Tarea 01. **Fecha límite** 2019-03-13 (YYYY-MM-DD), 23:59 horas.
+
+- Subir dudas sobre tarea o materia al foro de GitHub.
