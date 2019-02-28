@@ -193,7 +193,7 @@ $$
 
 ## Ejercicio en clase
 
-De acuerdo con Illman et al (2000) un gramo de *Chlorella emersonii* puede contener 29 kJ/g (energía por gramo). Si la tasa intrínseca es de 0.99 g/d, ¿cuántos gramos de *Chlorella* necesito para producir 5000 kJ? ¿Cuál es el tiempo de producción? Asuma un crecimiento exponencial, y un inóculo inicial con $N_0 = 1\mu \mathrm{g}$ de *Chlorella*.
+De acuerdo con Illman et al (2000) un gramo de *Chlorella emersonii* puede contener 29 kJ/g (energía por gramo). Si la tasa intrínseca es de 0.99 1/d, ¿cuántos gramos de *Chlorella* necesito para producir 5000 kJ? ¿Cuál es el tiempo de producción? Asuma un crecimiento exponencial, y un inóculo inicial con $N_0 = 1\mu \mathrm{g}$ de *Chlorella*.
 
 Illman, et al. (2000). Increase in Chlorella strains calorific values when grown in low nitrogen medium. Enzyme and Microbial Technology, 27(8), 631–635.
 
