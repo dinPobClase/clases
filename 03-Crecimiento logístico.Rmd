@@ -247,7 +247,7 @@ do()
 
 ## Ejercicio
 
-Suponga que existe un tanque sobre una balanza. Este tanque contiene aguas residuales, que son limpiadas por una pequeña planta del genero *Lemna*. El flujo del tanque es tal, que la masa del agua siempre se mantiene constante; de modo que la balanza solo mide el crecimiento de *Lemna*. Nos interesa mantener una población de Lemna con un rápido crecimiento; ya que éste es proporcional a la tasa de extracción de toxinas del tanque. El tanque inicia con 1 kg de *Lemna*, con una tasa de crecimiento es de 5 mg/s. Además, se ha determinado que el tanque solo soporta 100 kg de *Lemna*. ¿Cuál es el tamaño de población de *Lemna* que debería haber en el tanque para maximizar el crecimiento? ¿Cuánta biomasa debe extraer **en un día** para mantener un máximo de crecimiento? ¿A qué biomasa total debería cosechar la *Lemna*?
+Suponga que existe un tanque sobre una balanza. Este tanque contiene aguas residuales, que son limpiadas por una pequeña planta del genero *Lemna*. El flujo del tanque es tal, que la masa del agua siempre se mantiene constante; de modo que la balanza solo mide el crecimiento de *Lemna*. Nos interesa mantener una población de Lemna con un rápido crecimiento; ya que éste es proporcional a la tasa de extracción de toxinas del tanque. El tanque inicia con 1 kg de *Lemna*, con una tasa de crecimiento es de $5\times 10 ^{-6}\text{s}^{-1}$. Además, se ha determinado que el tanque solo soporta 100 kg de *Lemna*. ¿Cuál es el tamaño de población de *Lemna* que debería haber en el tanque para maximizar el crecimiento? ¿Cuánta biomasa debe extraer **en un día** para mantener un máximo de crecimiento? ¿A qué biomasa total debería cosechar la *Lemna*?
 
 # Definir fecha para taller de gestión de datos
 
