@@ -339,7 +339,7 @@ hudsoniaStoch$plotN()
 hudsoniaStoch$plotExtProb()
 ```
 
-## Otros goodies
+## Growth Rate
 
 
 ```{r, echo=TRUE}
@@ -359,21 +359,26 @@ hudsoniaStoch$extProb()
 
 - Descargar plantilla
 
-- Entregar avance el 3 de mayo antes de clase.
+- Plazo de entrega vence el 22 de mayo.
 
-- Entregar tarea el 10 de mayo antes de la clase. Si se entrega después de esa fecha y antes del 17 de mayo, se evalúa sobre la mitad. No se reciben tareas después del 17 de mayo.
+- Se reciben consultas en foro hasta el 20 de mayo.
 
 # Avances del trabajo grupal
 
 ## Metas de trabajo grupal
 
-Con base en lo estudiado sobre *Lobatus*, realice sus predicciones para:
+- 15 Mayo:  Revisión de Introducción, complementar revisión bibliográfica, mejora de redacción 7 %
 
-- La tasa de crecimiento ($>1$, 1, $<1$).
+- 22 Mayo: Metodología para la estimación de abundancia, Área de estudio, gestión de datos (incluir: planeamiento, colecta, control de calidad, descripción, integración, análisis). Datos almacenados en Base de Datos, y exportados a CSV 7 %.
 
-- Definir el procedimiento de análisis para calcular la probabilidad de extinción a 5 años.
+- 5 de Junio: Análisis de datos con *unmarked*. Desarrollo de scriot de análisis, e integración de resultados en documento. 6 %
 
-La meta está establecida para el 3 de mayo, antes de la clase. Si se entrega después del 3 de mayo y antes del 10, se evalua sobre la mitad del valor. Si se entrega después del 10 de mayo pierden todo el puntaje.  Aún así forma parte del trabajo grupal.
+- 12 de Junio: Entrega de documento, con resultados.
+
+- 19 de Junio: Defensa grupal de documento 5 %.
+
+
+
 
 
 
