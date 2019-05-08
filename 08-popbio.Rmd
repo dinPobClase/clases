@@ -1,7 +1,7 @@
 ---
 title: "popbio"
 author: "David Martínez Cascante"
-date: "26 de abril de 2018"
+date: "08 de mayo de 2019"
 output: ioslides_presentation
 ---
 
@@ -20,6 +20,32 @@ knitr::opts_chunk$set(echo = FALSE)
 > -  Metas de trabajo grupal
 
 > -  Metas para la próxima semana
+
+## R y paquetes de R
+
+> - R es un software de análisis de datos.
+
+> - Basado en C++ y en sí mismo.
+
+> - Producto de una tesis doctoral donde se reescribió un lenguage comercial desde cero.
+
+> - Los paquetes son extensiones de R, usualmente escritas en R, pero puede incluir otros lenguages
+
+> - TODO lista de campos en los que se utiliza R.
+
+## R y paquetes de R
+
+Los paquetes se crean por un procedimiento normalizado. La documentación es parte importante de dicho proceso.
+
+> - Todo paquete viene con un manual de funciones.
+
+> - Ahora se promueve que venga con un manual de uso, que explica el contexto en que se usa el paquete, el tipo de datos que procesa, y cómo combinar sus funciones de manera efectiva.
+
+> - R es uno de los lenguajes más populares (si no el más popular) entre profesionales de las ciencias naturales (especialmente de la vida y la tierra).
+
+> - R tiene un grupo activo que lo mantiene. También está en constante desarrollo y tiene una comunidad de entusiastas que ayudan a quienes están empezando a utilizarle.
+
+> - Muchos programas de análisis de datos de ecología se encontraban dispersos, y ahora han sido compilados en paquetes dentro de R.
 
 ## popbio
 
@@ -105,7 +131,131 @@ Incluye conjunto de datos de práctica.
     
     - `nreps`: Número de iteraciones.
     
-## ... pero el profe los chinea
+## Ejercicio
+
+1. Usando la ayuda del paquete, y el documento de referencia **Journal Of Statistical Software, 22(11), 1–23**, proyecte a 10 años la siguiente población:
+
+$$
+\mathbf{n}_{t+1} = 
+\begin{pmatrix}
+      0   & 0  &  5.95      \\
+      0.368 & 0.639 & 0.025 \\
+      0.001 & 0.152 & 0.051 \\
+\end{pmatrix}
+\times
+\begin{pmatrix}
+5  \\ 
+5   \\
+5
+ \end{pmatrix}
+$$
+
+2. Grafique el tamaño poblacional de cada etapa contra el tiempo.
+
+3. Grafique el tamaño poblacional contra el tiempo.
+
+## Solución
+
+```{r echo=TRUE}
+library(popbio)
+stages <- c("seedling", "vegetative", "flowering")
+A <- matrix(c(0, 0, 5.905, 0.368, 0.639, 0.025, 0.001, 0.152, 0.051), nrow = 3, byrow = TRUE, dimnames = list(stages, stages))
+n <- c(5, 5, 5)
+p <- pop.projection(A, n, 10)
+p
+```
+
+## Solución
+
+```{r echo=TRUE}
+stage.vector.plot(p$stage.vectors, col = 2:4)
+```
+
+
+## Ejercicio 2
+
+¿Qué pasa si elimina la fecundidad de la matriz de transición anterior?
+
+## Solución
+
+```{r echo=TRUE, results=FALSE}
+library(popbio)
+stages <- c("seedling", "vegetative", "flowering")
+A <- matrix(c(0, 0, 0, 0.368, 0.639, 0.025, 0.001, 0.152, 0.051), nrow = 3, byrow = TRUE, dimnames = list(stages, stages))
+n <- c(5, 5, 5)
+p <- pop.projection(A, n, 10)
+p
+```
+
+## Proyección estocástica
+
+El método anterior es *determinístico*, es decir, dadas las condiciones iniciales, y la matriz de transición, el resultado siempre va a ser el mismo. Sin embargo, al incorporar todos los errores de observación y de proceso, existe incertidumbre sobre los argumentos del modelo y sobre su resultado final.
+
+**Popbio** permite incorporar incertidumbre en las matrices de transición, aunque no en el vector del tamaño poblacional.
+
+```{r echo=TRUE}
+data("hudsonia")
+str(hudsonia)
+```
+
+## Proyección estocástica
+
+```{r echo=TRUE}
+n <- c(4264, 3, 30, 16, 25, 5)
+names(n) <- c("seed", "seedlings", "tiny", "small", "medium","large")
+
+x.eq <-
+  stoch.projection(
+  matrices = hudsonia,
+  n0 = n,
+  tmax = 10,
+  nreps = 1000,
+  verbose = FALSE
+  )
+
+str(x.eq)
+```
+
+## Representar gráficamente la proyección
+
+1. Sumar filas
+
+2. Hacer histograma
+
+```{r}
+
+hist( rowSums(x.eq), main = "Proyección estocástica",
+col = rgb(red = 0, green = 1, blue = 0.5, alpha = 0.5),
+xlab = "Tamaño población")
+```
+
+## Probabilidad de Cuasi-Extinción
+
+Es una proyección estocástica, que analiza cuántas veces la población bajo de un umbral de cuasi-extinción.
+
+```{r echo=TRUE}
+sqe <- stoch.quasi.ext(
+  hudsonia,
+  n,
+  Nx = 10, #Umbral de cuasi-extinción
+  nreps = 500, 
+  sumweight = c(0, 1, 1, 1, 1, 1), #Excluir etapa de análisis
+  verbose = FALSE
+  )
+
+str(sqe)
+
+```
+
+## Cuasi-extinción
+
+```{r}
+
+matplot(sqe, xlab = "Years", ylab = "Quasi-extinction probability",
+ type = "l", lty = 1, col = rainbow(10))
+```
+
+## Usando una clase de referencia
 
 El documento `Source.R` en el repositorio del material del curso contiene facilidades para usar el paquete.
 
